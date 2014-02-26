@@ -1,4 +1,4 @@
-package name.abhijitsarkar.webservices.jaxws.tools;
+package name.abhijitsarkar.gradle.plugin;
 
 import org.gradle.api.Plugin
 import org.gradle.api.Project

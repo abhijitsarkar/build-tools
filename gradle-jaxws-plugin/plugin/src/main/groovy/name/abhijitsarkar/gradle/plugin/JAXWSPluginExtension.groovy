@@ -1,4 +1,4 @@
-package name.abhijitsarkar.webservices.jaxws.tools;
+package name.abhijitsarkar.gradle.plugin;
 
 import org.apache.cxf.tools.wsdlto.WSDLToJava
 import org.gradle.api.Project
