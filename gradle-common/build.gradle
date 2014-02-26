@@ -1,0 +1,98 @@
+apply plugin: 'jacoco'
+apply plugin: 'pmd'
+apply plugin: 'findbugs'
+apply plugin: 'java'
+
+def props = new Properties()
+new URL('https://raw.github.com/abhijitsarkar/gradle/master/gradle-common/gradle.properties').withInputStream {
+    stream -> props.load(stream)
+}
+
+def config = new ConfigSlurper().parse(props)
+
+sourceCompatibility = props['projectSourceCompatibility']
+targetCompatibility = props['projectSourceCompatibility']
+
+group = props['projectGroup']
+version = props['projectVersion']
+
+configurations {
+    provided
+}
+
+repositories {
+    mavenCentral()
+}
+
+pmd {
+    toolVersion = props['pmdVersion']
+    sourceSets = [sourceSets.main]
+    ignoreFailures = true
+    targetJdk = props['projectSourceCompatibility']
+    ruleSetFiles = files("${rootProject.projectDir}/src/main/config/pmd/ruleset.xml")
+}
+
+findbugs {
+    toolVersion = props['findbugsVersion']
+    sourceSets = [sourceSets.main]
+    ignoreFailures = true
+    reportsDir = file("${buildDir}/reports/findbugs")
+    effort = 'default'
+}
+
+tasks.withType(Pmd) {
+    it.onlyIf { !project.hasProperty('skipCoverage') }
+    reports {
+        xml.enabled = false
+        html.enabled = true
+    }
+}
+
+tasks.withType(FindBugs) {
+    it.onlyIf { !project.hasProperty('skipCoverage') }
+    reports {
+        xml.enabled = false
+        html.enabled = true
+    }
+}
+
+jacoco {
+    toolVersion = props['jacocoVersion']
+}
+
+jacocoTestReport {
+    reports {
+        html.destination "${buildDir}/reports/jacoco"
+    }
+}
+
+dependencies {
+    provided(
+            [group: 'org.slf4j', name: 'slf4j-api', version: props['slf4jVersion']],
+            [group: 'ch.qos.logback', name: 'logback-core', version: props['logbackVersion']],
+            [group: 'ch.qos.logback', name: 'logback-classic', version: props['logbackVersion']]
+    )
+    testCompile(
+            [group: 'junit', name: 'junit', version: props['junitVersion']]
+    )
+    pmd([group: 'net.sourceforge.pmd', name: 'pmd', version: props['pmdVersion']])
+    findbugs([group: 'com.google.code.findbugs', name: 'findbugs', version: props['findbugsVersion']])
+    jacocoAnt([group: 'org.jacoco', name: 'org.jacoco.ant', version: props['jacocoVersion']])
+    jacocoAgent([group: 'org.jacoco', name: 'org.jacoco.agent', version: props['jacocoVersion']])
+
+}
+
+sourceSets {
+    [main, test].each {
+        it.compileClasspath += configurations.provided
+        it.runtimeClasspath += configurations.provided
+
+        it.output.resourcesDir = project.file("$buildDir/classes/${it.name}")
+    }
+}
+
+jar { manifest.attributes provider: 'Abhijit Sarkar' }
+
+rootProject.tasks['wrapper'].configure {
+    gradleVersion = props['gradleVersion']
+}
