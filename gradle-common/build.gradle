@@ -18,20 +18,47 @@ targetCompatibility = props['projectSourceCompatibility']
 group = props['projectGroup']
 version = props['projectVersion']
 
+def tempDir = file("${System.properties['java.io.tmpdir']}/gradle-common")
+
+/* Download PMD rule set to local. PMD does not accept a URI. */
+afterEvaluate {
+    def pmdRuleSet = file("${tempDir}/ruleset.xml")
+
+    if (!pmdRuleSet.exists()) {
+        tempDir.mkdirs()
+
+        download("${projectURI}/src/main/config/pmd/ruleset.xml", tempDir.absolutePath)
+    } else {
+        println "Found PMD ruleset at ${pmdRuleSet}."
+    }
+
+    pmd {
+        toolVersion = props['pmdVersion']
+        sourceSets = [sourceSets.main]
+        ignoreFailures = true
+        targetJdk = props['projectSourceCompatibility']
+        ruleSetFiles = files("${tempDir}/ruleset.xml")
+    }
+}
+
+def download(address, downloadLocation = "${tempDir}") {
+    def f = new File(downloadLocation, address.tokenize("/")[-1])
+    def fos = new FileOutputStream(f)
+    def out = new BufferedOutputStream(fos)
+    out << new URL(address).openStream()
+    out.close()
+
+    println "Downloaded ${address} to ${f.absolutePath}."
+
+    f.absolutePath
+}
+
 configurations {
     provided
 }
 
 repositories {
     mavenCentral()
-}
-
-pmd {
-    toolVersion = props['pmdVersion']
-    sourceSets = [sourceSets.main]
-    ignoreFailures = true
-    targetJdk = props['projectSourceCompatibility']
-    ruleSetFiles = files("${projectURI}/src/main/config/pmd/ruleset.xml".toURI())
 }
 
 findbugs {
