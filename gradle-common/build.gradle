@@ -3,8 +3,10 @@ apply plugin: 'pmd'
 apply plugin: 'findbugs'
 apply plugin: 'java'
 
+def projectURI = 'https://raw.github.com/abhijitsarkar/gradle/master/gradle-common'
+
 def props = new Properties()
-new URL('https://raw.github.com/abhijitsarkar/gradle/master/gradle-common/gradle.properties').withInputStream {
+new URL("${projectURI}/gradle.properties").withInputStream {
     stream -> props.load(stream)
 }
 
@@ -29,7 +31,7 @@ pmd {
     sourceSets = [sourceSets.main]
     ignoreFailures = true
     targetJdk = props['projectSourceCompatibility']
-    ruleSetFiles = files("${rootProject.projectDir}/src/main/config/pmd/ruleset.xml")
+    ruleSetFiles = files("${projectURI}/src/main/config/pmd/ruleset.xml".toURI())
 }
 
 findbugs {
