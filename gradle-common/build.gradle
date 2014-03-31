@@ -33,18 +33,16 @@ pmd {
     sourceSets = [sourceSets.main]
     ignoreFailures = true
     targetJdk = props['projectSourceCompatibility']
-    ruleSetFiles = files("${pmdRuleSetLocation}")
+    ruleSetFiles = files(pmdRuleSetLocation)
 }
 
 /* Download PMD rule set to local. PMD does not accept a URI. */
 task downloadPmdRuleSet {
     /* This keeps the file from downloaded again if it already exists. How cool is that? */
-    outputs.file "${pmdRuleSetLocation}"
+    outputs.file pmdRuleSetLocation
 
     doLast {
         def src = "${projectURI}/src/main/config/pmd/ruleset.xml"
-
-        println "Downloading ${src} to ${pmdRuleSetLocation.absolutePath}."
 
         pmdRuleSetLocation.parentFile.mkdirs()
 
