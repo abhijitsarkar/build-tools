@@ -39,12 +39,14 @@ pmd {
 /* Download PMD rule set to local. PMD does not accept a URI. */
 task downloadPmdRuleSet {
     /* This keeps the file from downloaded again if it already exists. How cool is that? */
-    outputs.file pmdRuleSetLocation
+    it.onlyIf { !pmdRuleSetLocation.exists() }
 
     doLast {
         def src = "${projectURI}/src/main/config/pmd/ruleset.xml"
 
         pmdRuleSetLocation.parentFile.mkdirs()
+
+        println "Downloading ${src} to ${pmdRuleSetLocation.absolutePath}."
 
         ant.get(src: "${src}", dest: pmdRuleSetLocation.absolutePath)
     }
