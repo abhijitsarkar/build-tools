@@ -18,41 +18,6 @@ targetCompatibility = props['projectSourceCompatibility']
 group = props['projectGroup']
 version = props['projectVersion']
 
-def tempDir = file("${System.properties['java.io.tmpdir']}/gradle-common")
-
-/* Download PMD rule set to local. PMD does not accept a URI. */
-afterEvaluate {
-    def pmdRuleSet = file("${tempDir}/ruleset.xml")
-
-    if (!pmdRuleSet.exists()) {
-        tempDir.mkdirs()
-
-        download("${projectURI}/src/main/config/pmd/ruleset.xml", tempDir.absolutePath)
-    } else {
-        println "Found PMD ruleset at ${pmdRuleSet}."
-    }
-
-    pmd {
-        toolVersion = props['pmdVersion']
-        sourceSets = [sourceSets.main]
-        ignoreFailures = true
-        targetJdk = props['projectSourceCompatibility']
-        ruleSetFiles = files("${tempDir}/ruleset.xml")
-    }
-}
-
-def download(address, downloadLocation = "${tempDir}") {
-    def f = new File(downloadLocation, address.tokenize("/")[-1])
-    def fos = new FileOutputStream(f)
-    def out = new BufferedOutputStream(fos)
-    out << new URL(address).openStream()
-    out.close()
-
-    println "Downloaded ${address} to ${f.absolutePath}."
-
-    f.absolutePath
-}
-
 configurations {
     provided
 }
@@ -61,20 +26,48 @@ repositories {
     mavenCentral()
 }
 
+def pmdRuleSetLocation = file("${System.properties['java.io.tmpdir']}/gradle-common/ruleset.xml")
+
+pmd {
+    toolVersion = props['pmdVersion']
+    sourceSets = [sourceSets.main]
+    ignoreFailures = true
+    targetJdk = props['projectSourceCompatibility']
+    ruleSetFiles = files("${pmdRuleSetLocation}")
+}
+
+/* Download PMD rule set to local. PMD does not accept a URI. */
+task downloadPmdRuleSet {
+    /* This keeps the file from downloaded again if it already exists. How cool is that? */
+    outputs.file "${pmdRuleSetLocation}"
+
+    doLast {
+        def src = "${projectURI}/src/main/config/pmd/ruleset.xml"
+
+        println "Downloading ${src} to ${pmdRuleSetLocation.absolutePath}."
+
+        pmdRuleSetLocation.parentFile.mkdirs()
+
+        ant.get(src: "${src}", dest: pmdRuleSetLocation.absolutePath)
+    }
+}
+
+tasks.withType(Pmd) {
+    it.dependsOn downloadPmdRuleSet
+
+    it.onlyIf { !project.hasProperty('skipCoverage') }
+    reports {
+        xml.enabled = false
+        html.enabled = true
+    }
+}
+
 findbugs {
     toolVersion = props['findbugsVersion']
     sourceSets = [sourceSets.main]
     ignoreFailures = true
     reportsDir = file("${buildDir}/reports/findbugs")
     effort = 'default'
-}
-
-tasks.withType(Pmd) {
-    it.onlyIf { !project.hasProperty('skipCoverage') }
-    reports {
-        xml.enabled = false
-        html.enabled = true
-    }
 }
 
 tasks.withType(FindBugs) {
