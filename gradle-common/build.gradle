@@ -38,7 +38,11 @@ pmd {
 
 /* Download PMD rule set to local. PMD does not accept a URI. */
 task downloadPmdRuleSet {
-    /* This keeps the file from downloaded again if it already exists. How cool is that? */
+    /* It'd seem that a more elegant way is to set outputs.file so that the task can determine for itself if the output
+     * has changed since the last run. Problem is, for a multi-project build, the task is evaluated separately for each
+     * build and hence the first time, all builds download the file even if it exists. Going forward, they don't.
+     * Depending on the number of sub-modules, that could incur some overhead.
+     */
     it.onlyIf { !pmdRuleSetLocation.exists() }
 
     doLast {
