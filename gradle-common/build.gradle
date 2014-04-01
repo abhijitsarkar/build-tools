@@ -36,28 +36,24 @@ pmd {
     ruleSetFiles = files(pmdRuleSetLocation)
 }
 
-/* Download PMD rule set to local. PMD does not accept a URI. */
-task downloadPmdRuleSet {
-    /* It'd seem that a more elegant way is to set outputs.file so that the task can determine for itself if the output
-     * has changed since the last run. Problem is, for a multi-project build, the task is evaluated separately for each
-     * build and hence the first time, all builds download the file even if it exists. Going forward, they don't.
-     * Depending on the number of sub-modules, that could incur some overhead.
-     */
-    onlyIf { !pmdRuleSetLocation.exists() }
+if (!rootProject.tasks.findByName('downloadPmdRuleSet')) {
+    rootProject.tasks.create('downloadPmdRuleSet', {
+        outputs.file pmdRuleSetLocation
 
-    doLast {
-        def src = "${projectURI}/src/main/config/pmd/ruleset.xml"
+        doLast {
+            def src = "${projectURI}/src/main/config/pmd/ruleset.xml"
 
-        pmdRuleSetLocation.parentFile.mkdirs()
+            pmdRuleSetLocation.parentFile.mkdirs()
 
-        println "Downloading ${src} to ${pmdRuleSetLocation.absolutePath}."
+            println "Downloading ${src} to ${pmdRuleSetLocation.absolutePath}."
 
-        ant.get(src: "${src}", dest: pmdRuleSetLocation.absolutePath)
-    }
+            ant.get(src: "${src}", dest: pmdRuleSetLocation.absolutePath)
+        }
+    })
 }
 
 tasks.withType(Pmd) {
-    it.dependsOn downloadPmdRuleSet
+    it.dependsOn rootProject.tasks['downloadPmdRuleSet']
 
     it.onlyIf { !project.hasProperty('skipCoverage') }
     reports {
