@@ -36,6 +36,13 @@ pmd {
     ruleSetFiles = files(pmdRuleSetLocation)
 }
 
+/* The download task should only be added to the root project. If a multimodule project imports this file within a
+ * 'subprojects' block, it's going to end up with as many copies of the download task as there are submodules. Because
+ * of the way Gradle task up-to-date works, each submodule is going to download the file the first time, even though
+ * they are all downloading the same file. Next time onwards, they're not going to download. If there are many
+ * submodules, this could incur some unnecessary overhead.
+ * http://www.gradle.org/docs/current/userguide/more_about_tasks.html
+ */
 if (!rootProject.tasks.findByName('downloadPmdRuleSet')) {
     rootProject.tasks.create('downloadPmdRuleSet', {
         outputs.file pmdRuleSetLocation
