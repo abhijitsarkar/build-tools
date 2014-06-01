@@ -116,7 +116,8 @@
             <failOnViolation>false</failOnViolation>
           </configuration>
         </plugin>
-        <plugin>
+        <!-- FindBugs doesn't support Java 8 yet https://jira.codehaus.org/browse/MFINDBUGS-194 -->
+        <!-- <plugin>
           <groupId>org.codehaus.mojo</groupId>
           <artifactId>findbugs-maven-plugin</artifactId>
           <version>2.5.4</version>
@@ -126,7 +127,7 @@
             <sourceEncoding>UTF-8</sourceEncoding>
             <xmlOutput>true</xmlOutput>
           </configuration>
-        </plugin>
+        </plugin> -->
         <plugin>
           <groupId>org.jacoco</groupId>
           <artifactId>jacoco-maven-plugin</artifactId>
@@ -190,7 +191,8 @@
               </execution>
             </executions>
           </plugin>
-          <plugin>
+          <!-- FindBugs doesn't support Java 8 yet https://jira.codehaus.org/browse/MFINDBUGS-194 -->
+          <!-- <plugin>
             <groupId>org.codehaus.mojo</groupId>
             <artifactId>findbugs-maven-plugin</artifactId>
             <executions>
@@ -202,7 +204,7 @@
                 </goals>
               </execution>
             </executions>
-          </plugin>
+          </plugin> -->
           <plugin>
             <groupId>org.jacoco</groupId>
             <artifactId>jacoco-maven-plugin</artifactId>
