@@ -3,7 +3,7 @@ apply plugin: 'pmd'
 apply plugin: 'findbugs'
 apply plugin: 'java'
 
-def projectURI = 'https://raw.github.com/abhijitsarkar/gradle/master/gradle-common'
+def projectURI = 'https://raw.github.com/abhijitsarkar/build-tools/master/gradle-common'
 
 def props = new Properties()
 new URL("${projectURI}/gradle.properties").withInputStream {
