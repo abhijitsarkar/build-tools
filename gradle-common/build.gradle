@@ -10,13 +10,11 @@ new URL("${projectURI}/gradle.properties").withInputStream {
     stream -> props.load(stream)
 }
 
-def config = new ConfigSlurper().parse(props)
+sourceCompatibility = props.projectSourceCompatibility
+targetCompatibility = props.projectSourceCompatibility
 
-sourceCompatibility = props['projectSourceCompatibility']
-targetCompatibility = props['projectSourceCompatibility']
-
-group = props['projectGroup']
-version = props['projectVersion']
+group = props.projectGroup
+version = props.projectVersion
 
 configurations {
     provided
@@ -29,10 +27,10 @@ repositories {
 def pmdRuleSetLocation = file("${System.properties['java.io.tmpdir']}/gradle-common/ruleset.xml")
 
 pmd {
-    toolVersion = props['pmdVersion']
+    toolVersion = props.pmdVersion
     sourceSets = [sourceSets.main]
     ignoreFailures = true
-    targetJdk = props['projectSourceCompatibility']
+    targetJdk = props.projectSourceCompatibility
     ruleSetFiles = files(pmdRuleSetLocation)
 }
 
@@ -70,7 +68,7 @@ tasks.withType(Pmd) {
 }
 
 findbugs {
-    toolVersion = props['findbugsVersion']
+    toolVersion = props.findbugsVersion
     sourceSets = [sourceSets.main]
     ignoreFailures = true
     reportsDir = file("${buildDir}/reports/findbugs")
@@ -86,7 +84,7 @@ tasks.withType(FindBugs) {
 }
 
 jacoco {
-    toolVersion = props['jacocoVersion']
+    toolVersion = props.jacocoVersion
 }
 
 jacocoTestReport {
@@ -97,18 +95,17 @@ jacocoTestReport {
 
 dependencies {
     provided(
-            [group: 'org.slf4j', name: 'slf4j-api', version: props['slf4jVersion']],
-            [group: 'ch.qos.logback', name: 'logback-core', version: props['logbackVersion']],
-            [group: 'ch.qos.logback', name: 'logback-classic', version: props['logbackVersion']]
+            [group: 'org.slf4j', name: 'slf4j-api', version: props.slf4jVersion],
+            [group: 'ch.qos.logback', name: 'logback-core', version: props.logbackVersion],
+            [group: 'ch.qos.logback', name: 'logback-classic', version: props.logbackVersion]
     )
     testCompile(
-            [group: 'junit', name: 'junit', version: props['junitVersion']]
+            [group: 'junit', name: 'junit', version: props.junitVersion]
     )
-    pmd([group: 'net.sourceforge.pmd', name: 'pmd', version: props['pmdVersion']])
-    findbugs([group: 'com.google.code.findbugs', name: 'findbugs', version: props['findbugsVersion']])
-    jacocoAnt([group: 'org.jacoco', name: 'org.jacoco.ant', version: props['jacocoVersion']])
-    jacocoAgent([group: 'org.jacoco', name: 'org.jacoco.agent', version: props['jacocoVersion']])
-
+    pmd([group: 'net.sourceforge.pmd', name: 'pmd', version: props.pmdVersion])
+    findbugs([group: 'com.google.code.findbugs', name: 'findbugs', version: props.findbugsVersion])
+    jacocoAnt([group: 'org.jacoco', name: 'org.jacoco.ant', version: props.jacocoVersion])
+    jacocoAgent([group: 'org.jacoco', name: 'org.jacoco.agent', version: props.jacocoVersion])
 }
 
 sourceSets {
@@ -123,5 +120,5 @@ sourceSets {
 jar { manifest.attributes provider: 'Abhijit Sarkar' }
 
 rootProject.tasks['wrapper'].configure {
-    gradleVersion = props['gradleVersion']
+    gradleVersion = props.gradleVersion
 }
