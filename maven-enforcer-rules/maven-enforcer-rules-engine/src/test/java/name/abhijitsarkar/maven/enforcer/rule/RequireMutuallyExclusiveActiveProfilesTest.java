@@ -1,6 +1,7 @@
 package name.abhijitsarkar.maven.enforcer.rule;
 
 import static java.util.Arrays.asList;
+import static name.abhijitsarkar.maven.enforcer.rule.TestUtil.createProfile;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -66,15 +67,8 @@ public class RequireMutuallyExclusiveActiveProfilesTest {
 	when(project.getActiveProfiles()).thenReturn(profiles);
 
 	RequireMutuallyExclusiveActiveProfiles rule = new RequireMutuallyExclusiveActiveProfiles();
-	rule.setProfiles("a,big.*");
+	rule.setProfiles("a,big*");
 
 	rule.execute(helper);
-    }
-
-    private Profile createProfile(String profileId) {
-	Profile p = new Profile();
-	p.setId(profileId);
-
-	return p;
     }
 }

@@ -1,6 +1,7 @@
 package name.abhijitsarkar.maven.enforcer.rule;
 
 import static java.util.Arrays.asList;
+import static name.abhijitsarkar.maven.enforcer.rule.TestUtil.createProfile;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -62,14 +63,7 @@ public class BannedProfilesTest {
 
 	BannedProfiles rule = new BannedProfiles();
 
-	rule.setProfiles("a\\d+");
+	rule.setProfiles("a*");
 	rule.execute(helper);
-    }
-
-    private Profile createProfile(String profileId) {
-	Profile p = new Profile();
-	p.setId(profileId);
-
-	return p;
     }
 }

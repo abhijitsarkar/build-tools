@@ -41,8 +41,7 @@ public class BannedProfiles implements EnforcerRule {
 
 	    logger.debug("After split: " + p);
 
-	    p = select(p,
-		    new ActiveProfilePredicate(project.getActiveProfiles()));
+	    p = select(p, new ActiveProfilePredicate(project));
 
 	    logger.debug("After selecting only active profiles: " + p);
 
