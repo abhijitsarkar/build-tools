@@ -9,8 +9,8 @@ import java.util.List;
 import org.apache.commons.collections4.Transformer;
 
 /**
- * Splits a string around a given delimiter. Null-safe, returns an empty list
- * for empty strings.
+ * Transforms a string to individual tokens based on a given delimiter.
+ * Null-safe, returns an empty list for empty strings.
  * 
  * @author Abhijit Sarkar
  *

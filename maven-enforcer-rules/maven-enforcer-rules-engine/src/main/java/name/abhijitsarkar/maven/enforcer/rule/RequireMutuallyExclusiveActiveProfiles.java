@@ -47,6 +47,8 @@ public class RequireMutuallyExclusiveActiveProfiles implements EnforcerRule {
 
 	try {
 	    MavenProject project = (MavenProject) helper.evaluate("${project}");
+	    Collection<String> activeProfiles = new ActiveProfilesTransformer()
+		    .transform(project);
 
 	    logger.debug("Input profiles: " + profiles);
 
@@ -62,7 +64,7 @@ public class RequireMutuallyExclusiveActiveProfiles implements EnforcerRule {
 
 		logger.debug("After comma split: " + p);
 
-		p = select(p, new ActiveProfilePredicate(project));
+		p = select(activeProfiles, new ActiveProfilePredicate(p));
 
 		logger.debug("After selecting only active profiles: " + p);
 

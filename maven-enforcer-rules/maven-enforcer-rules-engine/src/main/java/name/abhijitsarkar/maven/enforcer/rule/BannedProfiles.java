@@ -16,9 +16,9 @@ import org.codehaus.plexus.component.configurator.expression.ExpressionEvaluatio
 
 /**
  * Rule that fails if any of the given profiles are active, including inherited
- * ones. The 'profiles' string is a comma-separated list. For example, p1,p2 means
- * that profile p1 and p2 can't be active. Wildcards (*) in profile names are
- * supported too.
+ * ones. The 'profiles' string is a comma-separated list. For example, p1,p2
+ * means that profile p1 and p2 can't be active. Wildcards (*) in profile names
+ * are supported too.
  * 
  * @author Abhijit Sarkar
  *
@@ -43,6 +43,8 @@ public class BannedProfiles implements EnforcerRule {
 
 	try {
 	    MavenProject project = (MavenProject) helper.evaluate("${project}");
+	    Collection<String> activeProfiles = new ActiveProfilesTransformer()
+		    .transform(project);
 
 	    logger.debug("Input profiles: " + profiles);
 
@@ -50,7 +52,7 @@ public class BannedProfiles implements EnforcerRule {
 
 	    logger.debug("After split: " + p);
 
-	    p = select(p, new ActiveProfilePredicate(project));
+	    p = select(activeProfiles, new ActiveProfilePredicate(p));
 
 	    logger.debug("After selecting only active profiles: " + p);
 

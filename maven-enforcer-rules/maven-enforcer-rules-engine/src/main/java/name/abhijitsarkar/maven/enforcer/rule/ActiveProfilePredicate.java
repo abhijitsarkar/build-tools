@@ -1,58 +1,34 @@
 package name.abhijitsarkar.maven.enforcer.rule;
 
-import static java.util.Collections.emptyList;
 import static org.apache.commons.collections4.CollectionUtils.exists;
-import static org.apache.commons.collections4.CollectionUtils.isNotEmpty;
-import static org.apache.commons.collections4.CollectionUtils.union;
-import static org.apache.commons.collections4.CollectionUtils.unmodifiableCollection;
 import static org.codehaus.plexus.util.SelectorUtils.match;
 import static org.codehaus.plexus.util.StringUtils.isEmpty;
 
 import java.util.Collection;
 
 import org.apache.commons.collections4.Predicate;
-import org.apache.maven.model.Profile;
-import org.apache.maven.project.MavenProject;
 
 /**
- * Checks if a string matches the name of any active profiles, including
- * inherited ones. Supports wildcard in profile name. Null-safe.
+ * Checks if a profile matches the name of any active profiles. Supports
+ * wildcards in profile names. Null-safe.
  * 
  * @author Abhijit Sarkar
  *
  */
 public class ActiveProfilePredicate implements Predicate<String> {
-    private final Collection<Profile> activeProfiles;
+    private final Collection<String> profiles;
 
-    public ActiveProfilePredicate(MavenProject project) {
-	this.activeProfiles = getActiveProfiles(project);
-    }
-
-    public Collection<Profile> getActiveProfiles() {
-	return activeProfiles;
+    public ActiveProfilePredicate(Collection<String> profiles) {
+	this.profiles = profiles;
     }
 
     @Override
-    public boolean evaluate(String profile) {
-	return exists(activeProfiles, new Predicate<Profile>() {
+    public boolean evaluate(String activeProfile) {
+	return exists(profiles, new Predicate<String>() {
 	    @Override
-	    public boolean evaluate(Profile activeProfile) {
-		return !isEmpty(profile)
-			&& match(profile, activeProfile.getId());
+	    public boolean evaluate(String profile) {
+		return !isEmpty(activeProfile) && match(profile, activeProfile);
 	    }
 	});
-    }
-
-    private Collection<Profile> getActiveProfiles(MavenProject project) {
-	Collection<Profile> activeProfiles = project.getActiveProfiles();
-	activeProfiles = isNotEmpty(activeProfiles) ? activeProfiles
-		: emptyList();
-
-	MavenProject parentProject = project.getParent();
-
-	activeProfiles = parentProject == null ? activeProfiles : union(
-		activeProfiles, getActiveProfiles(parentProject));
-
-	return unmodifiableCollection(activeProfiles);
     }
 }
