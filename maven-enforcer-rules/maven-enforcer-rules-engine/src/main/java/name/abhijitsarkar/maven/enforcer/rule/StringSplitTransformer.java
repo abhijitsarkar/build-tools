@@ -8,6 +8,13 @@ import java.util.List;
 
 import org.apache.commons.collections4.Transformer;
 
+/**
+ * Splits a string around a given delimiter. Null-safe, returns an empty list
+ * for empty strings.
+ * 
+ * @author Abhijit Sarkar
+ *
+ */
 public class StringSplitTransformer implements
 	Transformer<String, List<String>> {
     private final String delimiter;

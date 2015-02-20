@@ -1,58 +1,68 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-  <modelVersion>4.0.0</modelVersion>
-  <parent>
-    <groupId>name.abhijitsarkar.maven</groupId>
-    <artifactId>maven-enforcer-rules</artifactId>
-    <version>0.0.1-SNAPSHOT</version>
-  </parent>
-  <artifactId>banned-profiles</artifactId>
-  <name>banned-profiles</name>
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<parent>
+		<groupId>name.abhijitsarkar.maven</groupId>
+		<artifactId>maven-enforcer-rules</artifactId>
+		<version>0.0.1-SNAPSHOT</version>
+	</parent>
+	<artifactId>banned-profiles</artifactId>
+	<name>banned-profiles</name>
+	<description>
+    <![CDATA[
+      Sample project showing how to enforce banned profiles. This is very useful when profiles are inherited from
+      parent projects but the current project doesn't need those. Instead of presenting the user with a (potentially) 
+      confusing and/or non-descript error, we fail-fast.
+      The 'profiles' string is a comma-separated list.
+      For example, p1,p2 means that profile p1 and p2 can't be active. 
+      Wildcards (*) in profile names are supported too.
+    ]]>
+  </description>
 
-  <build>
-    <plugins>
-      <plugin>
-        <artifactId>maven-enforcer-plugin</artifactId>
-        <version>1.4</version>
-        <dependencies>
-          <dependency>
-            <groupId>name.abhijitsarkar.maven</groupId>
-            <artifactId>maven-enforcer-rules-engine</artifactId>
-            <version>${project.version}</version>
-          </dependency>
-        </dependencies>
-        <executions>
-          <execution>
-            <id>enforce</id>
-            <configuration>
-              <rules>
-                <bannedProfiles
-                  implementation="name.abhijitsarkar.maven.enforcer.rule.BannedProfiles">
-                  <profiles>
-                    p.*
-                  </profiles>
-                </bannedProfiles>
-              </rules>
-            </configuration>
-            <goals>
-              <goal>enforce</goal>
-            </goals>
-          </execution>
-        </executions>
-      </plugin>
-    </plugins>
-  </build>
+	<build>
+		<plugins>
+			<plugin>
+				<artifactId>maven-enforcer-plugin</artifactId>
+				<version>1.4</version>
+				<dependencies>
+					<dependency>
+						<groupId>name.abhijitsarkar.maven</groupId>
+						<artifactId>maven-enforcer-rules-engine</artifactId>
+						<version>${project.version}</version>
+					</dependency>
+				</dependencies>
+				<executions>
+					<execution>
+						<id>enforce</id>
+						<configuration>
+							<rules>
+								<bannedProfiles
+									implementation="name.abhijitsarkar.maven.enforcer.rule.BannedProfiles">
+									<profiles>
+										p.*
+									</profiles>
+								</bannedProfiles>
+							</rules>
+						</configuration>
+						<goals>
+							<goal>enforce</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+		</plugins>
+	</build>
 
-  <profiles>
-    <profile>
-      <id>p1</id>
-    </profile>
-    <profile>
-      <id>p2</id>
-    </profile>
-    <profile>
-      <id>p3</id>
-    </profile>
-  </profiles>
+	<profiles>
+		<profile>
+			<id>p1</id>
+		</profile>
+		<profile>
+			<id>p2</id>
+		</profile>
+		<profile>
+			<id>p3</id>
+		</profile>
+	</profiles>
 
 </project>

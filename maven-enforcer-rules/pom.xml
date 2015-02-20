@@ -10,7 +10,7 @@
   <version>0.0.1-SNAPSHOT</version>
   <packaging>pom</packaging>
   <name>maven-enforcer-rules</name>
-  <description>Maven Enforcer plugin custom rules</description>
+  <description>Maven Enforcer plugin custom rules and sample projects showing their usage</description>
 
   <properties>
     <api.version>1.4</api.version>

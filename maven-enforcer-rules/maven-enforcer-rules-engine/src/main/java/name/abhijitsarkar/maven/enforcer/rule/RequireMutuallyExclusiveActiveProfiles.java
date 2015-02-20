@@ -14,6 +14,17 @@ import org.apache.maven.plugin.logging.Log;
 import org.apache.maven.project.MavenProject;
 import org.codehaus.plexus.component.configurator.expression.ExpressionEvaluationException;
 
+/**
+ * Rule that fails if any of the given combination pf profiles are active,
+ * including inherited ones. The 'profiles' string can contain several
+ * combinations separated by colon (:), where each combination is a
+ * comma-separated list. For example, p1,p2:p1,p3 means that profile p1 can't be
+ * active with either of profiles p2 or p3. Wildcards (*) in profile names are
+ * supported too.
+ * 
+ * @author Abhijit Sarkar
+ *
+ */
 public class RequireMutuallyExclusiveActiveProfiles implements EnforcerRule {
     private static final Transformer<String, List<String>> COLON_SPLIT_TRANSFORMER = new StringSplitTransformer(
 	    ":");

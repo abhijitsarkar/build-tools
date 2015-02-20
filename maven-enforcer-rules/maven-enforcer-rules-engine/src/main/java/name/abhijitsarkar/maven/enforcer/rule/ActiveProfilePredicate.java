@@ -6,6 +6,7 @@ import static org.apache.commons.collections4.CollectionUtils.isNotEmpty;
 import static org.apache.commons.collections4.CollectionUtils.union;
 import static org.apache.commons.collections4.CollectionUtils.unmodifiableCollection;
 import static org.codehaus.plexus.util.SelectorUtils.match;
+import static org.codehaus.plexus.util.StringUtils.isEmpty;
 
 import java.util.Collection;
 
@@ -13,15 +14,22 @@ import org.apache.commons.collections4.Predicate;
 import org.apache.maven.model.Profile;
 import org.apache.maven.project.MavenProject;
 
+/**
+ * Checks if a string matches the name of any active profiles, including
+ * inherited ones. Supports wildcard in profile name. Null-safe.
+ * 
+ * @author Abhijit Sarkar
+ *
+ */
 public class ActiveProfilePredicate implements Predicate<String> {
     private final Collection<Profile> activeProfiles;
 
     public ActiveProfilePredicate(MavenProject project) {
 	this.activeProfiles = getActiveProfiles(project);
     }
-    
+
     public Collection<Profile> getActiveProfiles() {
-        return activeProfiles;
+	return activeProfiles;
     }
 
     @Override
@@ -29,7 +37,8 @@ public class ActiveProfilePredicate implements Predicate<String> {
 	return exists(activeProfiles, new Predicate<Profile>() {
 	    @Override
 	    public boolean evaluate(Profile activeProfile) {
-		return match(profile, activeProfile.getId());
+		return !isEmpty(profile)
+			&& match(profile, activeProfile.getId());
 	    }
 	});
     }

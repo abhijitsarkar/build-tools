@@ -14,6 +14,15 @@ import org.apache.maven.plugin.logging.Log;
 import org.apache.maven.project.MavenProject;
 import org.codehaus.plexus.component.configurator.expression.ExpressionEvaluationException;
 
+/**
+ * Rule that fails if any of the given profiles are active, including inherited
+ * ones. The 'profiles' string is a comma-separated list. For example, p1,p2 means
+ * that profile p1 and p2 can't be active. Wildcards (*) in profile names are
+ * supported too.
+ * 
+ * @author Abhijit Sarkar
+ *
+ */
 public class BannedProfiles implements EnforcerRule {
     private static final Transformer<String, List<String>> COMMA_SPLIT_TRANSFORMER = new StringSplitTransformer(
 	    ",");
