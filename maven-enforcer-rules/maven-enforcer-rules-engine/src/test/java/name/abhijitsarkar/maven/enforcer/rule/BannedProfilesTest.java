@@ -15,7 +15,7 @@ import org.codehaus.plexus.component.configurator.expression.ExpressionEvaluatio
 import org.junit.Before;
 import org.junit.Test;
 
-public class RequireMutuallyExclusiveActiveProfilesTest {
+public class BannedProfilesTest {
     private MavenProject project;
     private EnforcerRuleHelper helper;
     private Log logger;
@@ -31,43 +31,38 @@ public class RequireMutuallyExclusiveActiveProfilesTest {
     }
 
     @Test(expected = EnforcerRuleException.class)
-    public void testWhenNotMutuallyExclusiveProfiles()
-	    throws ExpressionEvaluationException, EnforcerRuleException {
+    public void testWhenBannedProfileActive() throws EnforcerRuleException {
 	List<Profile> profiles = asList(createProfile("a"), createProfile("b"));
 
 	when(project.getActiveProfiles()).thenReturn(profiles);
 
-	RequireMutuallyExclusiveActiveProfiles rule = new RequireMutuallyExclusiveActiveProfiles();
-	/* Throw in some random spaces and see if the rule can handle it. */
-	rule.setProfiles("b, c: a,b");
+	BannedProfiles rule = new BannedProfiles();
 
+	rule.setProfiles("a, b");
 	rule.execute(helper);
     }
 
     @Test
-    public void testWhenMutuallyExclusiveProfiles()
-	    throws ExpressionEvaluationException, EnforcerRuleException {
+    public void testWhenBannedProfileNotActive() throws EnforcerRuleException {
 	List<Profile> profiles = asList(createProfile("a"), createProfile("c"));
 
 	when(project.getActiveProfiles()).thenReturn(profiles);
 
-	RequireMutuallyExclusiveActiveProfiles rule = new RequireMutuallyExclusiveActiveProfiles();
-	rule.setProfiles("b,c:a,b");
+	BannedProfiles rule = new BannedProfiles();
 
+	rule.setProfiles("b, d");
 	rule.execute(helper);
     }
 
     @Test(expected = EnforcerRuleException.class)
-    public void testWhenNotMutuallyExclusiveProfilesWithRegex()
-	    throws ExpressionEvaluationException, EnforcerRuleException {
-	List<Profile> profiles = asList(createProfile("a"),
-		createProfile("bigProfileName"));
+    public void testWhenBannedRegexProfileActive() throws EnforcerRuleException {
+	List<Profile> profiles = asList(createProfile("a1"));
 
 	when(project.getActiveProfiles()).thenReturn(profiles);
 
-	RequireMutuallyExclusiveActiveProfiles rule = new RequireMutuallyExclusiveActiveProfiles();
-	rule.setProfiles("a,big.*");
+	BannedProfiles rule = new BannedProfiles();
 
+	rule.setProfiles("a\\d+");
 	rule.execute(helper);
     }
 

@@ -14,9 +14,7 @@ import org.apache.maven.plugin.logging.Log;
 import org.apache.maven.project.MavenProject;
 import org.codehaus.plexus.component.configurator.expression.ExpressionEvaluationException;
 
-public class RequireMutuallyExclusiveActiveProfiles implements EnforcerRule {
-    private static final Transformer<String, List<String>> COLON_SPLIT_TRANSFORMER = new StringSplitTransformer(
-	    ":");
+public class BannedProfiles implements EnforcerRule {
     private static final Transformer<String, List<String>> COMMA_SPLIT_TRANSFORMER = new StringSplitTransformer(
 	    ",");
 
@@ -39,28 +37,19 @@ public class RequireMutuallyExclusiveActiveProfiles implements EnforcerRule {
 
 	    logger.debug("Input profiles: " + profiles);
 
-	    Collection<String> mutuallyExclusiveProfiles = COLON_SPLIT_TRANSFORMER
-		    .transform(profiles);
+	    Collection<String> p = COMMA_SPLIT_TRANSFORMER.transform(profiles);
 
-	    logger.debug("After colon split: " + mutuallyExclusiveProfiles);
+	    logger.debug("After split: " + p);
 
-	    Collection<String> p = null;
+	    p = select(p,
+		    new ActiveProfilePredicate(project.getActiveProfiles()));
 
-	    for (String profile : mutuallyExclusiveProfiles) {
-		p = COMMA_SPLIT_TRANSFORMER.transform(profile);
+	    logger.debug("After selecting only active profiles: " + p);
 
-		logger.debug("After comma split: " + p);
-
-		p = select(p,
-			new ActiveProfilePredicate(project.getActiveProfiles()));
-
-		logger.debug("After selecting only active profiles: " + p);
-
-		if (p.size() >= 2) {
-		    throw new EnforcerRuleException(
-			    "Found profiles that are not supposed to be active at the same time: "
-				    + join(p.iterator(), ","));
-		}
+	    if (!p.isEmpty()) {
+		throw new EnforcerRuleException(
+			"Found profiles that are not supposed to be active: "
+				+ join(p.iterator(), ","));
 	    }
 	} catch (ExpressionEvaluationException e) {
 	    throw new EnforcerRuleException("Unable to lookup an expression "

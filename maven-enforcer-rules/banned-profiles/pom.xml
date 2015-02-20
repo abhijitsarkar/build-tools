@@ -1,0 +1,58 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <parent>
+    <groupId>name.abhijitsarkar.maven</groupId>
+    <artifactId>maven-enforcer-rules</artifactId>
+    <version>0.0.1-SNAPSHOT</version>
+  </parent>
+  <artifactId>banned-profiles</artifactId>
+  <name>banned-profiles</name>
+
+  <build>
+    <plugins>
+      <plugin>
+        <artifactId>maven-enforcer-plugin</artifactId>
+        <version>1.4</version>
+        <dependencies>
+          <dependency>
+            <groupId>name.abhijitsarkar.maven</groupId>
+            <artifactId>maven-enforcer-rules-engine</artifactId>
+            <version>${project.version}</version>
+          </dependency>
+        </dependencies>
+        <executions>
+          <execution>
+            <id>enforce</id>
+            <configuration>
+              <rules>
+                <bannedProfiles
+                  implementation="name.abhijitsarkar.maven.enforcer.rule.BannedProfiles">
+                  <profiles>
+                    p.*
+                  </profiles>
+                </bannedProfiles>
+              </rules>
+            </configuration>
+            <goals>
+              <goal>enforce</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+    </plugins>
+  </build>
+
+  <profiles>
+    <profile>
+      <id>p1</id>
+    </profile>
+    <profile>
+      <id>p2</id>
+    </profile>
+    <profile>
+      <id>p3</id>
+    </profile>
+  </profiles>
+
+</project>

@@ -52,9 +52,9 @@
         <version>1.6</version>
       </dependency>
       <dependency>
-        <groupId>org.jmockit</groupId>
-        <artifactId>jmockit</artifactId>
-        <version>1.14</version>
+        <groupId>org.mockito</groupId>
+        <artifactId>mockito-core</artifactId>
+        <version>1.10.19</version>
         <scope>test</scope>
       </dependency>
     </dependencies>
@@ -63,5 +63,6 @@
   <modules>
     <module>maven-enforcer-rules-engine</module>
     <module>require-mutually-exclusive-active-profiles</module>
+    <module>banned-profiles</module>
   </modules>
 </project>
