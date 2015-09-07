@@ -1,26 +1,35 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
+
 	<groupId>name.abhijitsarkar.maven.scala</groupId>
 	<artifactId>maven-scala-parent</artifactId>
 	<version>1.0</version>
 	<packaging>pom</packaging>
 	<name>maven-scala-parent</name>
 	<description>Maven parent project containing common settings for Scala projects</description>
-	
+
 	<properties>
 		<scala.plugin.version>3.2.0</scala.plugin.version>
 		<scala.version>2.11.7</scala.version>
 		<scalaTest.plugin.version>1.0</scalaTest.plugin.version>
 		<scalaTest.version>2.2.4</scalaTest.version>
 		<akka.version>2.3.11</akka.version>
+		<akka-stream.version>1.0</akka-stream.version>
 		<mockito.version>1.10.19</mockito.version>
+		<slf4j.version>1.7.10</slf4j.version>
+		<logback.version>1.1.2</logback.version>
 		<project.build.sourceLevel>1.8</project.build.sourceLevel>
 		<project.build.targetLevel>1.8</project.build.targetLevel>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 	</properties>
 
 	<dependencies>
+		<dependency>
+			<groupId>org.slf4j</groupId>
+			<artifactId>slf4j-api</artifactId>
+			<version>${slf4j.version}</version>
+		</dependency>
 		<dependency>
 			<groupId>com.typesafe.akka</groupId>
 			<artifactId>akka-actor_2.11</artifactId>
@@ -46,6 +55,58 @@
 				<groupId>org.scala-lang</groupId>
 				<artifactId>scala-library</artifactId>
 				<version>${scala.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>ch.qos.logback</groupId>
+				<artifactId>logback-classic</artifactId>
+				<version>${logback.version}</version>
+				<scope>runtime</scope>
+				<optional>true</optional>
+			</dependency>
+			<dependency>
+				<groupId>com.typesafe.akka</groupId>
+				<artifactId>akka-slf4j_2.11</artifactId>
+				<version>${akka.version}</version>
+				<scope>runtime</scope>
+				<optional>true</optional>
+			</dependency>
+			<dependency>
+				<groupId>ch.qos.logback</groupId>
+				<artifactId>logback-core</artifactId>
+				<version>${logback.version}</version>
+				<scope>runtime</scope>
+				<optional>true</optional>
+			</dependency>
+			<dependency>
+				<groupId>com.typesafe.akka</groupId>
+				<artifactId>akka-stream-experimental_2.11</artifactId>
+				<version>${akka-stream.version}</version>
+				<optional>true</optional>
+			</dependency>
+			<dependency>
+				<groupId>com.typesafe.akka</groupId>
+				<artifactId>akka-http-core-experimental_2.11</artifactId>
+				<version>${akka-stream.version}</version>
+				<optional>true</optional>
+			</dependency>
+			<dependency>
+				<groupId>com.typesafe.akka</groupId>
+				<artifactId>akka-http-experimental_2.11</artifactId>
+				<version>${akka-stream.version}</version>
+				<optional>true</optional>
+			</dependency>
+			<dependency>
+				<groupId>com.typesafe.akka</groupId>
+				<artifactId>akka-http-spray-json-experimental_2.11</artifactId>
+				<version>${akka-stream.version}</version>
+				<optional>true</optional>
+			</dependency>
+			<dependency>
+				<groupId>com.typesafe.akka</groupId>
+				<artifactId>akka-http-testkit-experimental_2.11</artifactId>
+				<version>${akka-stream.version}</version>
+				<optional>true</optional>
+				<scope>test</scope>
 			</dependency>
 		</dependencies>
 	</dependencyManagement>
