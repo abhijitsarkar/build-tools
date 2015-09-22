@@ -14,7 +14,7 @@
 		<scala.version>2.11.7</scala.version>
 		<scalaTest.plugin.version>1.0</scalaTest.plugin.version>
 		<scalaTest.version>2.2.4</scalaTest.version>
-		<akka.version>2.3.11</akka.version>
+		<akka.version>2.3.14</akka.version>
 		<akka-stream.version>1.0</akka-stream.version>
 		<mockito.version>1.10.19</mockito.version>
 		<slf4j.version>1.7.10</slf4j.version>
@@ -47,6 +47,29 @@
 			<version>${mockito.version}</version>
 			<scope>test</scope>
 		</dependency>
+		<dependency>
+			<groupId>com.typesafe.akka</groupId>
+			<artifactId>akka-testkit_2.11</artifactId>
+			<version>${akka.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>ch.qos.logback</groupId>
+			<artifactId>logback-classic</artifactId>
+			<version>${logback.version}</version>
+			<scope>runtime</scope>
+		</dependency>
+		<dependency>
+			<groupId>com.typesafe.akka</groupId>
+			<artifactId>akka-slf4j_2.11</artifactId>
+			<version>${akka.version}</version>
+			<scope>runtime</scope>
+		</dependency>
+		<dependency>
+			<groupId>ch.qos.logback</groupId>
+			<artifactId>logback-core</artifactId>
+			<version>${logback.version}</version>
+			<scope>runtime</scope>
+		</dependency>
 	</dependencies>
 
 	<dependencyManagement>
@@ -55,27 +78,6 @@
 				<groupId>org.scala-lang</groupId>
 				<artifactId>scala-library</artifactId>
 				<version>${scala.version}</version>
-			</dependency>
-			<dependency>
-				<groupId>ch.qos.logback</groupId>
-				<artifactId>logback-classic</artifactId>
-				<version>${logback.version}</version>
-				<scope>runtime</scope>
-				<optional>true</optional>
-			</dependency>
-			<dependency>
-				<groupId>com.typesafe.akka</groupId>
-				<artifactId>akka-slf4j_2.11</artifactId>
-				<version>${akka.version}</version>
-				<scope>runtime</scope>
-				<optional>true</optional>
-			</dependency>
-			<dependency>
-				<groupId>ch.qos.logback</groupId>
-				<artifactId>logback-core</artifactId>
-				<version>${logback.version}</version>
-				<scope>runtime</scope>
-				<optional>true</optional>
 			</dependency>
 			<dependency>
 				<groupId>com.typesafe.akka</groupId>
