@@ -9,8 +9,7 @@
 	<description>Maven parent project containing common settings</description>
 
 	<properties>
-		<project.build.sourceLevel>1.8</project.build.sourceLevel>
-		<project.build.targetLevel>1.8</project.build.targetLevel>
+		<java.version>1.8</java.version>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<junit.version>4.12</junit.version>
 		<slf4j.version>1.7.10</slf4j.version>
@@ -70,11 +69,12 @@
 					<artifactId>maven-compiler-plugin</artifactId>
 					<version>3.3</version>
 					<configuration>
-						<source>${project.build.sourceLevel}</source>
-						<target>${project.build.targetLevel}</target>
+						<source>${java.version}</source>
+						<target>${java.version}</target>
 						<encoding>${project.build.sourceEncoding}</encoding>
 						<showDeprecation>true</showDeprecation>
 						<showWarnings>true</showWarnings>
+						<compilerVersion>${java.version}</compilerVersion>
 						<compilerArgs>
 							<arg>-parameters</arg>
 						</compilerArgs>
