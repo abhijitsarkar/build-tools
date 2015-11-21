@@ -3,7 +3,17 @@ apply plugin: 'pmd'
 apply plugin: 'findbugs'
 apply plugin: 'java'
 
-def projectURI = 'https://raw.github.com/abhijitsarkar/build-tools/master/gradle-common'
+def projectURI = null
+
+if (project.hasProperty('local')) {
+    logger.info('Building using local properties.')
+
+    projectURI = rootProject.projectDir.toURL()
+} else {
+    logger.info('Building using remote properties.')
+
+    projectURI = 'https://raw.github.com/abhijitsarkar/build-tools/master/gradle-common'
+}
 
 def props = new Properties()
 new URL("${projectURI}/gradle.properties").withInputStream {
@@ -30,7 +40,6 @@ pmd {
     toolVersion = props.pmdVersion
     sourceSets = [sourceSets.main]
     ignoreFailures = true
-    targetJdk = props.projectSourceCompatibility
     ruleSetFiles = files(pmdRuleSetLocation)
 }
 
