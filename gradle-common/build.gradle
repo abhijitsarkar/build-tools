@@ -111,7 +111,10 @@ dependencies {
     testCompile(
             [group: 'junit', name: 'junit', version: props.junitVersion]
     )
-    pmd([group: 'net.sourceforge.pmd', name: 'pmd', version: props.pmdVersion])
+    pmd(
+            [group: 'net.sourceforge.pmd', name: 'pmd-core', version: props.pmdVersion],
+            [group: 'net.sourceforge.pmd', name: 'pmd-java', version: props.pmdVersion]
+    )
     findbugs([group: 'com.google.code.findbugs', name: 'findbugs', version: props.findbugsVersion])
     jacocoAnt([group: 'org.jacoco', name: 'org.jacoco.ant', version: props.jacocoVersion])
     jacocoAgent([group: 'org.jacoco', name: 'org.jacoco.agent', version: props.jacocoVersion])
