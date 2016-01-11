@@ -106,7 +106,8 @@ dependencies {
     provided(
             [group: 'org.slf4j', name: 'slf4j-api', version: props.slf4jVersion],
             [group: 'ch.qos.logback', name: 'logback-core', version: props.logbackVersion],
-            [group: 'ch.qos.logback', name: 'logback-classic', version: props.logbackVersion]
+            [group: 'ch.qos.logback', name: 'logback-classic', version: props.logbackVersion],
+            [group: 'org.projectlombok', name: 'lombok', version: props.lombokVersion]
     )
     testCompile(
             [group: 'junit', name: 'junit', version: props.junitVersion]
