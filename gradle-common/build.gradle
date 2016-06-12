@@ -8,7 +8,7 @@ def projectURI = null
 if (project.hasProperty('local')) {
     logger.info('Building using local properties.')
 
-    projectURI = rootProject.projectDir.toURL()
+    projectURI = rootProject.projectDir.toURI().toURL()
 } else {
     logger.info('Building using remote properties.')
 
@@ -25,10 +25,6 @@ targetCompatibility = props.projectSourceCompatibility
 
 group = props.projectGroup
 version = props.projectVersion
-
-configurations {
-    provided
-}
 
 repositories {
     mavenCentral()
@@ -98,33 +94,33 @@ jacoco {
 
 jacocoTestReport {
     reports {
+        xml.enabled false
+        csv.enabled false
         html.destination "${buildDir}/reports/jacoco"
     }
 }
 
 dependencies {
-    provided(
-            [group: 'org.slf4j', name: 'slf4j-api', version: props.slf4jVersion],
-            [group: 'ch.qos.logback', name: 'logback-core', version: props.logbackVersion],
-            [group: 'ch.qos.logback', name: 'logback-classic', version: props.logbackVersion]
+    compileOnly(
+            "org.slf4j:slf4j-api:${props.slf4jVersion}",
+            "ch.qos.logback:logback-core:${props.logbackVersion}",
+            "ch.qos.logback:logback-classic:${props.logbackVersion}"
     )
     testCompile(
-            [group: 'junit', name: 'junit', version: props.junitVersion]
+            "junit:junit:${props.junitVersion}"
     )
     pmd(
-            [group: 'net.sourceforge.pmd', name: 'pmd-core', version: props.pmdVersion],
-            [group: 'net.sourceforge.pmd', name: 'pmd-java', version: props.pmdVersion]
+            "net.sourceforge.pmd:pmd-core:${props.pmdVersion}",
+            "net.sourceforge.pmd:pmd-java8:${props.pmdVersion}"
     )
-    findbugs([group: 'com.google.code.findbugs', name: 'findbugs', version: props.findbugsVersion])
-    jacocoAnt([group: 'org.jacoco', name: 'org.jacoco.ant', version: props.jacocoVersion])
-    jacocoAgent([group: 'org.jacoco', name: 'org.jacoco.agent', version: props.jacocoVersion])
+    findbugs("com.google.code.findbugs:findbugs:${props.findbugsVersion}")
+
+    jacocoAnt("org.jacoco:org.jacoco.ant:${props.jacocoVersion}")
+    jacocoAgent("org.jacoco:org.jacoco.agent:${props.jacocoVersion}")
 }
 
 sourceSets {
     [main, test].each {
-        it.compileClasspath += configurations.provided
-        it.runtimeClasspath += configurations.provided
-
         it.output.resourcesDir = project.file("$buildDir/classes/${it.name}")
     }
 }
