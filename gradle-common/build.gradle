@@ -104,7 +104,9 @@ dependencies {
     compileOnly(
             "org.slf4j:slf4j-api:${props.slf4jVersion}",
             "ch.qos.logback:logback-core:${props.logbackVersion}",
-            "ch.qos.logback:logback-classic:${props.logbackVersion}"
+            "ch.qos.logback:logback-classic:${props.logbackVersion}",
+            /* Add this in case client project attempts to suppress findbugs warnings for Lombok generated classes */
+            "com.google.code.findbugs:findbugs:${props.findbugsVersion}"
     )
     testCompile(
             "junit:junit:${props.junitVersion}"
