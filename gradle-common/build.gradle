@@ -51,7 +51,7 @@ if (!rootProject.tasks.findByName('downloadPmdRuleSet')) {
         outputs.file pmdRuleSetLocation
 
         doLast {
-            def src = "${projectURI}/src/main/config/pmd/ruleset.xml"
+            def src = "${projectURI}/src/main/conf/pmd/ruleset.xml"
 
             pmdRuleSetLocation.parentFile.mkdirs()
 

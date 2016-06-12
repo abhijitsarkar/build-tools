@@ -35,6 +35,7 @@
         <exclude name="DefaultPackage"/>
         <exclude name="DataflowAnomalyAnalysis"/>
         <exclude name="AvoidLiteralsInIfCondition"/>
+        <exclude name="AtLeastOneConstructor"/>
     </rule>
     <rule ref="rulesets/java/coupling.xml">
         <exclude name="LoosePackageCoupling"/>
@@ -53,17 +54,25 @@
         <exclude name="ShortClassName"/>
         <!-- Lombok generates code with dollar signs in equals/hashCode and so this tends to cry wolf. -->
         <exclude name="AvoidDollarSigns"/>
-        <!-- Short variables in lambda expression are acceptable. 'ex' or 'e' in a catch block are ok. -->
+        <!-- Avoid duplication because we override the minimum property. -->
         <exclude name="ShortVariable"/>
         <!-- Avoid duplication because we override the minimum property. -->
         <exclude name="LongVariable"/>
+    </rule>
+    <!-- Short variables in lambda expression are acceptable. 'ex' or 'e' in a catch block are ok. -->
+    <rule ref="rulesets/java/naming.xml/ShortVariable">
+        <properties>
+            <property name="minimum" value="1"/>
+        </properties>
     </rule>
     <rule ref="rulesets/java/naming.xml/LongVariable">
         <properties>
             <property name="minimum" value="36"/>
         </properties>
     </rule>
-    <rule ref="rulesets/java/optimizations.xml"/>
+    <rule ref="rulesets/java/optimizations.xml">
+        <exclude name="MethodArgumentCouldBeFinal"/>
+    </rule>
     <rule ref="rulesets/java/strictexception.xml"/>
     <rule ref="rulesets/java/strings.xml">
         <!-- Avoid duplication because we override... -->
