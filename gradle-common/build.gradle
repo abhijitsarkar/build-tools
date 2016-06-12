@@ -31,6 +31,7 @@ repositories {
 }
 
 def pmdRuleSetLocation = file("${System.properties['java.io.tmpdir']}/gradle-common/ruleset.xml")
+pmdRuleSetLocation.deleteOnExit()
 
 pmd {
     toolVersion = props.pmdVersion
