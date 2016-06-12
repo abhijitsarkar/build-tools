@@ -125,6 +125,20 @@ sourceSets {
     }
 }
 
+task javadocJar(type: Jar) {
+    classifier = 'javadoc'
+    from javadoc
+}
+
+task sourcesJar(type: Jar) {
+    classifier = 'sources'
+    from sourceSets.main.allSource
+}
+
+artifacts {
+    archives javadocJar, sourcesJar
+}
+
 jar { manifest.attributes provider: 'Abhijit Sarkar' }
 
 rootProject.tasks['wrapper'].configure {
