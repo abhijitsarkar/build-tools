@@ -97,7 +97,10 @@
         </properties>
     </rule>
     <rule ref="rulesets/java/sunsecure.xml"/>
-    <rule ref="rulesets/java/typeresolution.xml"/>
+    <rule ref="rulesets/java/typeresolution.xml">
+        <!-- Too much. -->
+        <exclude name="SignatureDeclareThrowsException"/>
+    </rule>
     <rule ref="rulesets/java/unnecessary.xml">
         <!-- Matter of style -->
         <exclude name="UselessParentheses"/>
