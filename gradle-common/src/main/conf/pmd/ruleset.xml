@@ -83,9 +83,12 @@
         <exclude name="MethodArgumentCouldBeFinal"/>
         <exclude name="LocalVariableCouldBeFinal"/>
     </rule>
-    <rule ref="rulesets/java/strictexception.xml"/>
+    <rule ref="rulesets/java/strictexception.xml">
+        <!-- Too much. -->
+        <exclude name="SignatureDeclareThrowsException"/>
+    </rule>
     <rule ref="rulesets/java/strings.xml">
-        <!-- Avoid duplication because we override... -->
+        <!-- Avoid duplication because we override. -->
         <exclude name="AvoidDuplicateLiterals"/>
     </rule>
     <rule ref="rulesets/java/strings.xml/AvoidDuplicateLiterals">
