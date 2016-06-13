@@ -30,14 +30,15 @@ repositories {
     mavenCentral()
 }
 
-def pmdRuleSetLocation = file("${System.properties['java.io.tmpdir']}/gradle-common/ruleset.xml")
-pmdRuleSetLocation.deleteOnExit()
+if (!rootProject.ext.has('pmdRuleSetLocation')) {
+    ext.set('pmdRuleSetLocation', "${System.properties['java.io.tmpdir']}/${UUID.randomUUID().toString()}/ruleset.xml")
+}
 
 pmd {
     toolVersion = props.pmdVersion
     sourceSets = [sourceSets.main]
     ignoreFailures = true
-    ruleSetFiles = files(pmdRuleSetLocation)
+    ruleSetFiles = files(rootProject.pmdRuleSetLocation)
 }
 
 /* The download task should only be added to the root project. If a multimodule project imports this file within a
@@ -49,6 +50,10 @@ pmd {
  */
 if (!rootProject.tasks.findByName('downloadPmdRuleSet')) {
     rootProject.tasks.create('downloadPmdRuleSet', {
+        def pmdRuleSetLocation = file(rootProject.pmdRuleSetLocation)
+
+        it.onlyIf { !pmdRuleSetLocation.exists() }
+
         outputs.file pmdRuleSetLocation
 
         doLast {
