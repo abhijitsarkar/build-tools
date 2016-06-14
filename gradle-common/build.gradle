@@ -2,6 +2,9 @@ apply plugin: 'jacoco'
 apply plugin: 'pmd'
 apply plugin: 'findbugs'
 apply plugin: 'java'
+apply plugin: 'groovy'
+apply plugin: 'eclipse'
+apply plugin: 'idea'
 
 def projectURI = null
 
@@ -106,16 +109,31 @@ jacocoTestReport {
     }
 }
 
+tasks.withType(Test) { task ->
+//    jacoco {
+//        destinationFile = file("$buildDir/reports/jacoco/${task.name}.exec")
+//    }
+    reports {
+//        junitXml.enabled = true
+        html.enabled = true
+    }
+}
+
+compileJava.options.encoding = 'UTF-8'
+
 dependencies {
     compileOnly(
             "org.slf4j:slf4j-api:${props.slf4jVersion}",
             "ch.qos.logback:logback-core:${props.logbackVersion}",
             "ch.qos.logback:logback-classic:${props.logbackVersion}",
             /* Add this in case client project attempts to suppress findbugs warnings for Lombok generated classes */
-            "com.google.code.findbugs:findbugs:${props.findbugsVersion}"
+            "com.google.code.findbugs:findbugs:${props.findbugsVersion}",
+            "org.projectlombok:lombok:${props.lombokVersion}"
     )
     testCompile(
-            "junit:junit:${props.junitVersion}"
+            "junit:junit:${props.junitVersion}",
+            "org.hamcrest:hamcrest-all:${props.hamcrestVersion}",
+            "org.codehaus.groovy:groovy:${props.groovyVersion}"
     )
     pmd(
             "net.sourceforge.pmd:pmd-core:${props.pmdVersion}",
@@ -127,10 +145,73 @@ dependencies {
     jacocoAgent("org.jacoco:org.jacoco.agent:${props.jacocoVersion}")
 }
 
+def integrationTestDir = relativePath("${projectDir}/src/integration-test")
+
 sourceSets {
-    [main, test].each {
+    integrationTest {
+        java {
+            srcDir "${integrationTestDir}/java"
+        }
+        groovy {
+            srcDir "${integrationTestDir}/groovy"
+        }
+        resources {
+            srcDir "${integrationTestDir}/resources"
+        }
+        compileClasspath += (sourceSets.main.compileClasspath + sourceSets.test.compileClasspath)
+        runtimeClasspath += (sourceSets.main.runtimeClasspath + sourceSets.test.runtimeClasspath)
+    }
+
+    [main, test, integrationTest].each {
         it.output.resourcesDir = project.file("$buildDir/classes/${it.name}")
     }
+}
+
+
+task integrationTest(type: Test, dependsOn: test) {
+    onlyIf { !project.hasProperty('skipIT') }
+
+    testClassesDir = sourceSets.integrationTest.output.classesDir
+    classpath = sourceSets.integrationTest.runtimeClasspath
+}
+
+//testResultsDirName = "reports/junit"
+//testReportDirName = "junit"
+
+build.dependsOn integrationTest
+
+idea {
+    module {
+        testSourceDirs += file("${integrationTestDir}/java")
+        testSourceDirs += file("${integrationTestDir}/groovy")
+        testSourceDirs += file("${integrationTestDir}/resources")
+    }
+}
+
+task afterEclipseImport << {
+    def classpath = new XmlParser().parse(file(".classpath"))
+    def outputDir = sourceSets.integrationTest.output
+    new Node(classpath, "classpathentry", [kind: "src", output: "${outputDir.classesDir}", path: "${integrationTestDir}/java"])
+    new Node(classpath, "classpathentry", [kind: "src", output: "${outputDir.classesDir}", path: "${integrationTestDir}/groovy"])
+    new Node(classpath, "classpathentry", [kind: "src", output: "${outputDir.resourcesDir}", path: "${integrationTestDir}/resources"])
+    def writer = new FileWriter(file(".classpath"))
+    def printer = new XmlNodePrinter(new PrintWriter(writer))
+    printer.setPreserveWhitespace(true)
+    printer.print(classpath)
+}
+
+jar {
+    manifest {
+        attributes(
+                'Implementation-Vendor': 'Abhijit Sarkar',
+                'Implementation-Version': version
+        )
+    }
+}
+
+rootProject.tasks['wrapper'].configure {
+    gradleVersion = props.gradleVersion
+    distributionUrl = props.gradleDownloadUrl
 }
 
 task javadocJar(type: Jar) {
@@ -145,10 +226,4 @@ task sourcesJar(type: Jar) {
 
 artifacts {
     archives javadocJar, sourcesJar
-}
-
-jar { manifest.attributes provider: 'Abhijit Sarkar' }
-
-rootProject.tasks['wrapper'].configure {
-    gradleVersion = props.gradleVersion
 }
