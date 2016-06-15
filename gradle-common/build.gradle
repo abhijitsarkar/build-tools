@@ -180,26 +180,6 @@ task integrationTest(type: Test, dependsOn: test) {
 
 build.dependsOn integrationTest
 
-idea {
-    module {
-        testSourceDirs += file("${integrationTestDir}/java")
-        testSourceDirs += file("${integrationTestDir}/groovy")
-        testSourceDirs += file("${integrationTestDir}/resources")
-    }
-}
-
-task afterEclipseImport << {
-    def classpath = new XmlParser().parse(file(".classpath"))
-    def outputDir = sourceSets.integrationTest.output
-    new Node(classpath, "classpathentry", [kind: "src", output: "${outputDir.classesDir}", path: "${integrationTestDir}/java"])
-    new Node(classpath, "classpathentry", [kind: "src", output: "${outputDir.classesDir}", path: "${integrationTestDir}/groovy"])
-    new Node(classpath, "classpathentry", [kind: "src", output: "${outputDir.resourcesDir}", path: "${integrationTestDir}/resources"])
-    def writer = new FileWriter(file(".classpath"))
-    def printer = new XmlNodePrinter(new PrintWriter(writer))
-    printer.setPreserveWhitespace(true)
-    printer.print(classpath)
-}
-
 jar {
     manifest {
         attributes(
