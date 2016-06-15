@@ -102,17 +102,19 @@ jacoco {
 }
 
 jacocoTestReport {
+    executionData = files("$buildDir/jacoco/test.exec", "$buildDir/jacoco/integrationTest.exec")
     reports {
-        xml.enabled false
-        csv.enabled false
-        html.destination "${buildDir}/reports/jacoco"
+        html.enabled = true
+        xml.enabled = false
+        csv.enabled = false
+        html.destination = "${buildDir}/reports/jacoco"
     }
 }
 
 tasks.withType(Test) { task ->
-//    jacoco {
-//        destinationFile = file("$buildDir/reports/jacoco/${task.name}.exec")
-//    }
+    jacoco {
+        destinationFile = file("$buildDir/jacoco/${task.name}.exec")
+    }
     reports {
 //        junitXml.enabled = true
         html.enabled = true
@@ -133,7 +135,7 @@ dependencies {
     testCompile(
             "junit:junit:${props.junitVersion}",
             "org.hamcrest:hamcrest-all:${props.hamcrestVersion}",
-            "org.codehaus.groovy:groovy:${props.groovyVersion}"
+            "org.spockframework:spock-core:$spockVersion"
     )
     pmd(
             "net.sourceforge.pmd:pmd-core:${props.pmdVersion}",
@@ -179,6 +181,7 @@ task integrationTest(type: Test, dependsOn: test) {
 //testReportDirName = "junit"
 
 build.dependsOn integrationTest
+integrationTest.finalizedBy jacocoTestReport
 
 jar {
     manifest {
