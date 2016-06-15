@@ -120,7 +120,7 @@ tasks.withType(Test) { task ->
         destinationFile = file("$buildDir/jacoco/${task.name}.exec")
     }
     reports {
-//        junitXml.enabled = true
+        junitXml.enabled = false
         html.enabled = true
         html.destination = "${buildDir}/reports/${task.name}"
     }
