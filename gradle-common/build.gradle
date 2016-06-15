@@ -102,7 +102,7 @@ jacoco {
 }
 
 jacocoTestReport {
-    executionData = fileTree(relativePath("$buildDir/jacoco")).include('*.exec')
+    executionData = fileTree("$buildDir/jacoco").include('*.exec')
     reports {
         html.enabled = true
         xml.enabled = false
